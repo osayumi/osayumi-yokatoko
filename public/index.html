@@ -12,6 +12,7 @@
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.9.2/firebase-auth.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -30,6 +31,29 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
+    const auth = getAuth();
+
+    // 新規会員登録処理
+    const registerForm = document.getElementById('register-form');
+    const registerMailAddressInput = document.getElementById('registerMailAddress');
+    const registerPasswordInput = document.getElementById('registerPassword');
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const mailAddress = registerMailAddressInput.value;
+      const password = registerPasswordInput.value;
+      if (!mailAddress || !password) {
+        return;
+      }
+      createUserWithEmailAndPassword(auth, mailAddress, password)
+        .then(() => {
+          // 新規会員登録フォームを初期化
+          registerMailAddressInput.value = '';
+          registerPasswordInput.value = '';
+        })
+        .catch((error) => {
+          alert('登録に失敗しました[' + error.message + ']');
+        });
+    });
   </script>
   <h1>あなたのいいところは?</h1>
   <p>診断したい名前を入れて下さい</p>
